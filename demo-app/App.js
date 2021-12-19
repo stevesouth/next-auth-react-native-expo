@@ -1,9 +1,10 @@
 import "react-native-url-polyfill/auto";
-
 import { StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
 
-const HOST = "http://192.168.1.34:3000";
+import LoginGoogle from "./LoginGoogle";
+
+const HOST = "http://<localip>:3000";
 const GOOGLE = "/api/auth/signin/google";
 const CSRF = "/api/auth/csrf";
 
@@ -86,6 +87,20 @@ export default function App() {
     }
   }, []);
 
+  const loginPage = params?.challengePair?.challenge ? (
+    <LoginGoogle
+      challenge={params.challengePair}
+      codeCallback={async (code) => {
+        console.log("NEARLY THERE");
+        const csrf = await fetch(
+          `${params.redirectUri}?code=${code}&state=${params.state}`
+        )
+          .then((response) => console.log(response))
+          .catch((error) => console.log(error));
+      }}
+    ></LoginGoogle>
+  ) : null;
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
@@ -93,6 +108,7 @@ export default function App() {
         expo
       </Text>
       <Text>{log}</Text>
+      {loginPage}
     </View>
   );
 }
