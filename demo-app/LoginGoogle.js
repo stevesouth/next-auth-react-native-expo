@@ -3,7 +3,7 @@ import { View, Button } from "react-native";
 import * as Google from "@stevesouth/expo-auth-session/providers/google";
 import { useAutoDiscovery } from "@stevesouth/expo-auth-session";
 
-const EXPO_CLIENT_ID = "<repalce with expo client id>";
+const GOOGLE_CLIENT_ID = "<enter your google oauth clien id>";
 
 export default function LoginGoogle({
   challenge,
@@ -16,11 +16,9 @@ export default function LoginGoogle({
     : null;
 
   console.log("token endpoint", tokenEndpoint);
-  console.log("render challenge: ", challenge.challenge);
-  console.log("render verifier: ", challenge.verifier);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: EXPO_CLIENT_ID,
+    expoClientId: GOOGLE_CLIENT_ID,
     shouldAutoExchangeCode: false,
     responseType: "code",
     codeChallengeMethod: "S256",
@@ -31,15 +29,9 @@ export default function LoginGoogle({
     scope: ["openid"],
   });
 
-  console.log(request);
-  console.log("verifier", request && request.codeVerifier);
-
   useEffect(async () => {
     if (response?.type === "success") {
-      console.log("response", response);
-      console.log("BACK FROM GOOGLE", response);
-      console.log("CODE RESPONSE", response.params.code);
-      codeCallback(response.params.code);
+      codeCallback(response.params);
     }
   }, [response]);
   return (

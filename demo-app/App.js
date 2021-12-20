@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 import LoginGoogle from "./LoginGoogle";
 
-const HOST = "http://<localip>:3000";
+const HOST = "<next auth app url>";
 const GOOGLE = "/api/auth/signin/google";
 const CSRF = "/api/auth/csrf";
 
@@ -90,13 +90,18 @@ export default function App() {
   const loginPage = params?.challengePair?.challenge ? (
     <LoginGoogle
       challenge={params.challengePair}
-      codeCallback={async (code) => {
-        console.log("NEARLY THERE");
-        const csrf = await fetch(
-          `${params.redirectUri}?code=${code}&state=${params.state}`
-        )
+      codeCallback={async (responseParams) => {
+        logger.log("\nStep 7: Received code callback: \n");
+        logger.log(JSON.stringify(responseParams, null, 4));
+
+        const callbackUrl = `${params.redirectUri}?code=${responseParams.code}&state=${params.state}&authuser=${responseParams.authuser}&scope=${responseParams.scope}&prompt=${responseParams.prompt}`;
+
+        logger.log("\nStep 8: Sending code and state to the redirectUri\n");
+        logger.log(callbackUrl);
+
+        fetch(callbackUrl)
           .then((response) => console.log(response))
-          .catch((error) => console.log(error));
+          .catch((error) => console.log("ERROR 4", error));
       }}
     ></LoginGoogle>
   ) : null;
