@@ -1,6 +1,9 @@
 import NextAuth from "@stevesouth/next-auth";
 import GoogleProvider from "@stevesouth/next-auth/providers/google";
 
+console.log("GOOGLE_ID", process.env.GOOGLE_ID);
+console.log("GOOGLE_SECRET", process.env.GOOGLE_SECRET);
+
 export default NextAuth({
   providers: [
     GoogleProvider({
