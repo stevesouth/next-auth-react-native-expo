@@ -17,5 +17,5 @@ export default NextAuth({
     strategy: "jwt",
   },
 
-  debug: true,
+  debug: false,
 });
