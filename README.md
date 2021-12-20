@@ -1,29 +1,28 @@
 # next-auth-react-native-expo
 
-Both next auth and expo have PRs open to support this example flow.
+Both next auth and expo have PRs open to support this example flow. I have pushed modified modules to the @stevesouth npm repo.
 
-Clone both the repos next to this one.
+This is a proof of concept attempting to use react native expo auth, together with next auth. The flow very nearly works, but I think i've been scuppered at the final point.
 
-git clone git@github.com:stevesouth/next-auth.git
-git clone git@github.com:stevesouth/expo.git
+Concept
 
-The main expo library is expo-auth-session. To install the modified version.
+1. Use next-auth as the backend for a react native mobile app
+1. Keep oauth client secrets private to the server
+1. Have expo auth do the oauth flow and request only a code
+1. Have next-auth receive the code and do the code for token exchange
 
-Use node 14 / npm 7.
+Issue
 
-cd ../expo/
-git checkout allow-manual-AuthRequest-codeChallenge
-npm run setup:native
+- This flow very nearly works. However at the last point, where next-auth is doing the token replacement google complains that the redirect uris do not match as they are different for step 3 (this is an expo url in development) and 4 (this is a next auth url).
 
-cd ../expo/packages/expo-auth-session
-npm i && npm run build
-npm link
+I'm not quite sure why this exists in the oauth spec, as both uris are valid, hardcoded in the oauth configuration, and work perfectly well if used for both steps 3 and 4.
 
-You can now link the modified expo-auth-session locally.
+Setup
 
-cd ../../../next-auth-react-native-expo/demo-app
-npm link expo-auth-session
+1. setup a google oauth credentials provider
+1. enter you next auth location in demo-app/App.js
+1. enter your google outh client id in demo-ap/LoginGoogle.js
+1. create a SECRET, GOOGLE_ID, GOOGLE_SECRET environment variables in demo-web/.env.local
+1. start the next auth app and the expo app
 
-To check you were on the correct branch and the build and linking has worked, ensure the check on line 209 in demo-app/node_modules/expo-auth-session/build/AuthRequest.js is:
-
-if (this.codeChallenge) {
+Note. To test this properly you should deply the next app to a public url. Vercel is the easiest way to do this.
