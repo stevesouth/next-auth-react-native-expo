@@ -1,5 +1,7 @@
 # next-auth-react-native-expo
 
+Attempt 1
+
 Both next auth and expo have PRs open to support this example flow. I have pushed modified modules to the @stevesouth npm repo.
 
 This is a proof of concept attempting to use react native expo auth, together with next auth. The flow very nearly works, but I think i've been scuppered at the final point.
@@ -26,3 +28,18 @@ Setup
 1. start the next auth app and the expo app
 
 Note. To test this properly you should deply the next app to a public url. Vercel is the easiest way to do this.
+
+Attempt 2
+
+1. Reqest csrf / codeChallenge in react native (via fetch)
+1. Pass through to expo auth session
+1. Redirect back to next auth instead of react native
+1. Pass token back to react native
+
+As the core request and code to token exchange need to use the same redirect uri, the next attempt was to redirect back to the next auth url. If this worked, the final step would have been to pass back the token to the react native side.
+
+The problem with this approach seems to be that fetch and the browser do not share cookies. So when I redirect back to next auth the state and verifier cookies are missing. This
+
+Attempt 3
+
+Next attempt will be to do the full flow in the expo browser, and finally redirect back to the native app. This is probably most correct in any case, it just means less reuse of the code that already exists.
